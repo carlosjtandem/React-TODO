@@ -1,30 +1,43 @@
-
 import './App.css';
 import React from 'react';
-import AppUI from './AppUI'
+import AppUI from './AppUI';
+
+// const defaultTodos = [
+//   { text: 'Cortar cebolla', completed: false },
+//   { text: 'Actividad 2', completed: false },
+//   { text: 'ptra acttividades', completed: true }
+// ]
+
+function useLocalStorage(itemName,initialValue){
 
 
+  const localStorageItem = localStorage.getItem(itemName);
+  let parsedItem;
+  if (!localStorageItem) {
+    localStorage.setItem(itemName, JSON.stringify(initialValue));
+    parsedItem = [];
+  } else { //ya tiene algo el array
+    parsedItem = JSON.parse(localStorageItem);
+  }
 
+  const [item, setItem] = React.useState(parsedItem);
 
+    // creo una funcion para actualizar mi local storage
+    const saveItem= (newItem) => {
+      // convertimos en string los todos 
+      const stringfiedItem = JSON.stringify(newItem);
+      localStorage.setItem(itemName,stringfiedItem);
+      setItem(newItem);
+    }
 
-const defaultTodos = [
-  { text: 'Cortar cebolla', completed: false },
-  { text: 'Actividad 2', completed: false },
-  { text: 'ptra acttividades', completed: true }
-]
+    return [item, saveItem,];
+}
 
 function App() {
 
-  const localStorageTodos = localStorage.getItem('TODOS_V1');
-  let parsedTodos;
-  if (!localStorageTodos) {
-    localStorage.setItem('TODOS_V1', JSON.stringify([]));
-    parsedTodos = [];
-  } else { //ya tiene algo el array
-    parsedTodos = JSON.parse(localStorageTodos);
-  }
+  const [todos,saveTodos]= useLocalStorage('TODOS_V1',[])
 
-  const [todos, setTodos] = React.useState(parsedTodos);
+
   const [searchValue, setSearchValue] = React.useState('');
 
   const completedTodos = todos.filter(todo => !!todo.completed).length;
@@ -42,13 +55,7 @@ function App() {
     });
   }
 
-  // creo una funcion para actualizar mi local storage
-  const saveTodos = (newTodos) => {
-    // convertimos en string los todos 
-    const stringfiedTodos = JSON.stringify(newTodos);
-    localStorage.setItem('TODOS_V1',stringfiedTodos);
-    setTodos(newTodos);
-  }
+
 
 
   const completeTodo = (text) => {
