@@ -30,10 +30,6 @@ function useLocalStorage(itemName, initialValue) {
         }
     )
 
-
-
-
-
     // creo una funcion para actualizar mi local storage
     const saveItem = (newItem) => {
         // convertimos en string los todos 
@@ -44,7 +40,6 @@ function useLocalStorage(itemName, initialValue) {
         } catch (error) {
             setError(error)
         }
-
     }
 
     return { item, saveItem, loading, error};
